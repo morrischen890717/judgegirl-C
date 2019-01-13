@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "tree.h"
+Node *treeAND(Node *root1, Node *root2);
+Node *treeOR(Node *root1, Node *root2);
+Node *a;
+Node *d;
+Node *root3 = NULL; 
+Node *root4 = NULL;
+Node *insertBST(Node *root, int val);
+Node *find(Node *root, int data){
+    Node *now;
+    if(root->val == data){
+        now = root;
+        return now;
+    }
+    else{
+        return find(root->left, data);
+        return find(root->right, data);
+    } 
+}
+Node *treeOR(Node *root1, Node *root2){
+    int sum;
+    if(root1 != NULL && root2 != NULL){
+        Node *newnode = (Node*)malloc(sizeof(Node));
+        newnode->val = root1->val + root2->val;
+        newnode->left = treeOR(root1->left, root2->left);
+        newnode->right = treeOR(root1->right, root2->right);
+        return newnode;
+    }
+    if(root1 != NULL && root2 == NULL){
+        Node *newnode = (Node *)malloc(sizeof(Node));
+        newnode->val = root1->val;
+        newnode->left = treeOR(root1->left, NULL);
+        newnode->right = treeOR(root1->right, NULL);
+        return newnode;
+    }
+    if(root1 == NULL && root2 != NULL){
+        Node *newnode = (Node *)malloc(sizeof(Node));
+        newnode->val = root2->val;
+        newnode->left = treeOR(NULL, root2->left);
+        newnode->right = treeOR(NULL, root2->right);
+        return newnode;
+    }
+    if(root1 == NULL && root2 == NULL){
+        return NULL;
+    }
+}
+Node *treeAND(Node *root1, Node *root2){
+    int product;
+    if(root1 != NULL && root2 != NULL){
+        product = root1->val * root2->val;
+        root3 = insertBST(root3, product);
+        root3 = treeAND(root1->left, root2->left);
+        root3 = treeAND(root1->right, root2->right); 
+    }
+    return root3;
+}
