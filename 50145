@@ -1,0 +1,140 @@
+nclude <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+
+
+typedef struct Node
+{
+    char c;
+    struct Node *next;
+}Node;
+void substring(Node* text, Node* pattern);
+void subsequence(Node* text, Node* pattern);
+
+
+
+
+int now_substring_index = 0;
+int sum_substring_index = 0;
+int b = 0;
+int stop = 0;
+int a = 0;
+Node *head;
+Node *temp;
+void substring(Node* text, Node* pattern){
+    if(stop == 0){
+        head = (Node*)malloc(sizeof(Node));
+        assert(head != NULL);
+        head->c = pattern->c;
+        head->next = pattern->next;
+        stop = 1;
+    }
+    if(pattern == NULL || pattern->c == '\0'){
+        printf("%d\n", sum_substring_index);
+        return;
+    }
+    if(text->c == pattern->c){
+    	if(a == 0){
+    		temp = (Node*)malloc(sizeof(Node));
+    		assert(temp != NULL);
+    		temp->c = text->c;
+    		temp->next = text->next;
+    		b = now_substring_index;
+    		a = 1;
+		}
+		if(a == 2){
+			temp->c = text->c;
+			temp->next = text->next;
+			b = now_substring_index;
+			a = 1;
+		}
+        sum_substring_index += now_substring_index;
+        now_substring_index++;
+        substring(text->next, pattern->next);
+    }
+    else{
+        sum_substring_index = 0;
+        if(a == 1){
+        	now_substring_index = b;
+        	now_substring_index++;
+        	a = 2;
+        	substring(temp->next, head);
+    	}
+    	else{
+    		now_substring_index++;
+    		substring(text->next, head);
+		}
+#ifdef r
+        printf("head.c = %c\n", head->c);
+#endif
+    }
+    return;
+} 
+int sum_subsequence_index = 0;
+int now_subsequence_index = 0;
+void subsequence(Node* text, Node* pattern){
+    if(pattern == NULL){
+        printf("%d\n", sum_subsequence_index);
+        return;
+    }
+    if(text->c == pattern->c){
+        sum_subsequence_index += now_subsequence_index;
+        now_subsequence_index++;
+        subsequence(text->next, pattern->next);
+    }
+    else{
+        now_subsequence_index++;
+        subsequence(text->next, pattern);
+    }
+    return;
+}
+
+
+
+
+Node* insert(Node* root, char c)
+{
+    if(root == NULL){
+        root = (Node*)malloc(sizeof(Node));
+        root->c = c;
+        root->next = NULL;
+        return root;
+    }
+    root->next = insert(root->next, c);
+    return root;
+}
+int main(int argc, char const *argv[])
+{
+    char tmp = '\n';
+    int N, M, i, act;
+    Node *text = NULL, *pattern = NULL, *cur = NULL;
+ 
+    scanf("%d%d", &act, &N);
+    while(isspace(tmp)) scanf("%c", &tmp);
+    text = insert(text, tmp);
+    cur = text;
+    for(i = 0; i < N-1; i++){
+        scanf("%c", &tmp);
+        cur->next = insert(cur->next, tmp);
+        cur = cur->next;
+    }
+ 
+    scanf("%d", &M);
+    tmp = '\n';
+    while(isspace(tmp)) scanf("%c", &tmp);
+    pattern = insert(pattern, tmp);
+    cur = pattern;
+    for(i = 0; i < M-1; i++){
+        scanf("%c", &tmp);
+        cur->next = insert(cur->next, tmp);
+        cur = cur->next;
+    }
+    if (!act)
+        substring(text, pattern);
+    else
+        subsequence(text, pattern);
+    return 0;
+}
