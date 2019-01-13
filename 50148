@@ -1,0 +1,101 @@
+#include <stdio.h>
+int n;
+int level_ = 0;
+int max_area = 0;
+int min_area = 100000000;
+void largeonsmall(int width[], int length[], int level, int area, int now_width, int now_length, int i){
+    if(i == n){
+#ifdef MAXAREASUM
+        if(level > level_){
+            level_ = level;
+            max_area = area;
+        }
+        if(level == level_){
+            if(max_area < area){
+                max_area = area;
+            }
+        }
+#endif
+#ifdef MINAREASUM
+        if(level > level_){
+            level_ = level;
+            min_area = area;
+        }
+        if(level == level_){
+            if(min_area > area){
+                min_area = area;
+            }
+        }
+#endif
+        return;
+    }
+    else{
+        largeonsmall(width, length, level, area, now_width, now_length, i + 1);//不放
+        if(width[i] >= now_width && length[i] >= now_length){
+            largeonsmall(width, length, level + 1, area + width[i] * length[i], width[i], length[i], i + 1);//要放 
+        } 
+    }
+}
+ 
+ 
+void smallonlarge(int width[], int length[], int level, int area, int now_width, int now_length, int i){
+    if(i == n){
+#ifdef MAXAREASUM
+        if(level > level_){
+            level_ = level;
+            max_area = area;
+            //printf("level = %d, area = %d\n", level_, max_area);
+        }
+        if(level == level_){
+            if(max_area < area){
+                max_area = area;
+            }
+        }
+#endif
+#ifdef MINAREASUM
+        if(level > level_){
+            level_ = level;
+            min_area = area; 
+        }
+        if(level == level_){
+            if(min_area > area){
+                min_area = area;
+            }
+        }
+#endif
+        return;
+    }
+    else{
+        smallonlarge(width, length, level, area, now_width, now_length, i + 1);
+        if(width[i] <= now_width && length[i] <= now_length){
+            smallonlarge(width, length, level + 1, area + width[i] * length[i], width[i], length[i], i + 1);
+        }
+    }
+}
+ 
+ 
+int main(){
+    scanf("%d", &n);
+    int width[n], length[n];
+    for(int i = 0; i < n; i++){
+        scanf("%d%d", &width[i], &length[i]);
+        if(width[i] < length[i]){
+            int temp = width[i];
+            width[i] = length[i];
+            length[i] = temp;
+        }
+    }
+#ifdef LARGEONSMALL
+    largeonsmall(width, length, 0, 0, 0, 0, 0);
+#endif
+#ifdef SMALLONLARGE
+    smallonlarge(width, length, 0, 0, 1000, 1000, 0);
+#endif
+#ifdef MAXAREASUM
+    printf("%d %d", level_, max_area);
+#endif
+#ifdef MINAREASUM
+    printf("%d %d", level_, min_area);
+#endif
+    return 0;
+}
