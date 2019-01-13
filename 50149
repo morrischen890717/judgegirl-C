@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Student{
+    int student_id;
+    int chinese;
+    int english;
+    int math;
+    int science;
+    int social;
+};
+typedef struct Student student;
+ 
+int compare(const void *data1, const void *data2){
+    student *ptr1 = (student *)data1;
+    student *ptr2 = (student *)data2;
+    int sum1, sum2;
+    sum1 = ptr1->chinese + ptr1->english + ptr1->math + ptr1->science + ptr1->social;
+    sum2 = ptr2->chinese + ptr2->english + ptr2->math + ptr2->science + ptr2->social;
+    if(sum1 < sum2){
+        return 1;
+    }
+    else if(sum1 > sum2){
+        return -1;
+    }
+    else{
+        if(ptr1->math < ptr2->math){
+            return 1;
+        }
+        else if(ptr1->math > ptr2->math){
+            return -1;
+        }
+        else{
+            if(ptr1->english < ptr2->english){
+                return 1;
+            } 
+            else if(ptr1->english > ptr2->english){
+                return -1;
+            }
+            else{
+                if(ptr1->science < ptr2->science){
+                    return 1;
+                }
+                else if(ptr1->science > ptr2->science){
+                    return -1;
+                }
+                else{
+                    if(ptr1->chinese < ptr2->chinese){
+                        return 1;
+                    }
+                    else if(ptr1->chinese > ptr2->chinese){
+                        return -1;
+                    }
+                    else{
+                        if(ptr1->social < ptr2->social){
+                            return 1;
+                        } 
+                        else if(ptr1->social > ptr2->social){
+                            return -1;
+                        }
+                        else{
+                            if(ptr1->student_id < ptr2->student_id){
+                                return -1;
+                            }
+                            else if(ptr1->student_id > ptr2->student_id){
+                                return 1;
+                            }
+                            else{
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+ 
+ 
+int main(){
+    int m, n;
+    scanf("%d%d", &m, &n);
+    student a[n];
+    for(int i = 0; i < n; i++){
+        scanf("%d%d%d%d%d%d", &a[i].student_id, &a[i].chinese, &a[i].english, &a[i].math, &a[i].science, &a[i].social);
+    }
+    qsort(a, n, sizeof(student), compare);
+    for(int i = 0; i < m; i++){
+        printf("%d\n", a[i].student_id);
+    }
+    int k = m;
+    while(a[k].math == a[k - 1].math && a[k].english == a[k - 1].english && a[k].science == a[k - 1].science && a[k].chinese == a[k - 1].chinese && a[k].social == a[k - 1].social){
+        printf("%d\n", a[k].student_id);
+        k++;
+    }
+#ifdef t
+    for(int i = 0; i < n; i++){
+        printf("%d %d %d %d %d %d\n", a[i].student_id, a[i].chinese, a[i].english, a[i].math, a[i].science, a[i].social);
+    }
+#endif
+    return 0;
+}
